@@ -4,11 +4,11 @@
 " URL: https://rosie-lang.org/
 " Licence: MIT
 
-" " Only load this indent file when no other was loaded.
-" if exists("b:did_indent")
-"   finish
-" endif
-" let b:did_indent = 1
+" Only load this indent file when no other was loaded.
+if exists("b:did_indent")
+  finish
+endif
+let b:did_indent = 1
 
 setlocal indentexpr=RplIndent(v:lnum)
 
@@ -21,26 +21,24 @@ func! RplIndent(lnum)
   endif
 
   " We see if we are in between two grammar delimiters
-  let prev_lnum = a:lnum
-  while prev_lnum > 0
-    let prev_lnum = prevnonblank(prev_lnum - 1)
+  let prev_lnum = prevnonblank(a:lnum - 1)
+  while prev_lnum >= 1
     let prev_grammar_index = s:IsGrammarLine(prev_lnum)
     if prev_grammar_index > 0
       break
     endif
+    let prev_lnum = prevnonblank(prev_lnum - 1)
   endwhile
 
-  let next_lnum = a:lnum
+  let next_lnum = nextnonblank(a:lnum + 1)
   let max_line = line('$')
   while next_lnum <= max_line
-    let next_lnum = nextnonblank(next_lnum + 1)
     let next_grammar_index = s:IsGrammarLine(next_lnum)
     if next_grammar_index > 0
       break
     endif
+    let next_lnum = nextnonblank(next_lnum + 1)
   endwhile
-
-  echo next_grammar_index prev_grammar_index
 
   if !next_grammar_index || !prev_grammar_index
     " We hit the end of the file on one end
