@@ -22,7 +22,7 @@ func! RplIndent(lnum)
 
   " We see if we are in between two grammar delimiters
   let prev_lnum = prevnonblank(a:lnum - 1)
-  while prev_lnum >= 1
+  while prev_lnum >= 1 && prev_lnum != 0
     let prev_grammar_index = s:IsGrammarLine(prev_lnum)
     if prev_grammar_index > 0
       break
@@ -32,7 +32,7 @@ func! RplIndent(lnum)
 
   let next_lnum = nextnonblank(a:lnum + 1)
   let max_line = line('$')
-  while next_lnum <= max_line
+  while next_lnum <= max_line && next_lnum != 0
     let next_grammar_index = s:IsGrammarLine(next_lnum)
     if next_grammar_index > 0
       break

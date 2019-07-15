@@ -22,14 +22,13 @@ syn region rplUnion transparent matchgroup=rplUnionEdge start='\[\^' start='\[' 
 hi link rplUnionEdge StorageClass
 
 " Most vague char collection must be defined first
-" We don't want '\', '[', ']', '^', or '-' unless they are escaped. To do
-" this, we allow any character that isn't one of those, or an escaped version
-" one of those.
-syn match rplCharList '\[\^\?\([^\\[\]\^-]\|\\[\\[\]\^-]\)\+\]'
+" For char lists and ranges, we don't want '\', '[', ']', '^', or '-' unless
+" they are escaped. To do this, we allow any character that isn't one of those
+" or an escaped version one of those. This atom is copied around 3 times,
+" since you cannot define variables.
+syn match rplCharList '\[\^\?\([^\\[\]\^\-]\|\\[\\[\]\^\-]\)\+\]'
 hi link rplCharList Character
-" TODO: Does this only accept single characters as the edges or can it be
-" unicode escapes?
-syn match rplCharRange '\[\^\?.-.\]'
+syn match rplCharRange '\[\^\?\([^\\[\]\^\-]\|\\[\\[\]\^\-]\)-\([^\\[\]\^\-]\|\\[\\[\]\^\-]\)\]'
 hi link rplCharRange Character
 " Named char sets can only have word characters
 syn match rplNamedCharSet '\[:\^\?\w\+:\]'
@@ -119,7 +118,7 @@ hi link rplGrammarKeyword Keyword
 " }}}
 
 " Testing {{{
-syn region rplTest start=+-- \?test+ end=+$+ oneline contains=rplTestKeyword,rplTestDirective,rplLiteral
+syn region rplTest start=+^-- \?test+ end=+$+ oneline contains=rplTestKeyword,rplTestDirective,rplLiteral
 hi link rplTest Special
 
 syn keyword rplTestDirective contained test
